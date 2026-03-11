@@ -21,3 +21,7 @@ export function createWorkOrder(data: {
     })
   })
 }
+
+export function getWorkOrders() {
+  return realm.objects("WorkOrder").filtered("deleted == false")
+}
