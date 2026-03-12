@@ -1,11 +1,20 @@
-import {realm} from '../database/realm'
+
+import { realm } from '../database/realm'
 import uuid from "react-native-uuid"
+import { WorkOrder } from '../types/WorkOrder'
+
 
 export function createWorkOrder(data: {
   title: string
   description: string
   assignedTo: string
 }) {
+
+  try {
+
+  } catch (error) {
+
+  }
   realm.write(() => {
     realm.create("WorkOrder", {
       id: uuid.v4(),
@@ -18,10 +27,14 @@ export function createWorkOrder(data: {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       pendingSync: true,
+      pendingAction: "create",
     })
   })
 }
 
 export function getWorkOrders() {
-  return realm.objects("WorkOrder").filtered("deleted == false")
+  return realm.objects<WorkOrder[]>("WorkOrder")
+  .filtered("deleted == false")
+  .sorted("createdAt")
+
 }

@@ -9,4 +9,6 @@ export type WorkOrder = {
   completed: boolean
   deleted: boolean
   deletedAt?: string
+  pendingSync: boolean
+  pendingAction: "create" | "update" | "delete" | null
 }

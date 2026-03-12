@@ -1,40 +1,45 @@
 import Realm from "realm"
 import { api } from "./api"
 import { realm } from "../database/realm"
+import { pushLocalChanges } from "./pushLocalChanges"
+import { useSyncStore } from "../store/syncStore"
+import { WorkOrder } from "../types/WorkOrder"
 
-export async function syncWorkOrders(lastSync?: string) {
-    const response = await api.get("/work-orders/sync", {
-        params: { since: lastSync },
-    })
-  
+export async function syncWorkOrders() {
+    const { lastSync, setLastSync, setSyncing } = useSyncStore.getState()
+    setSyncing(true)
 
-    const { created, updated, deleted } = response.data
+    try {
+       
+        await pushLocalChanges()
 
-    realm.write(() => {
+        const response = await api.get("/work-orders/sync", {
+            params: { since: lastSync },
+        })
 
-        created.forEach((order: any) => {
-            realm.create(
-                "WorkOrder",
-                { ...order, pendingSync: false },
-                Realm.UpdateMode.Modified
+        const { created, updated, deleted } = response.data
+
+        realm.write(() => {
+            created.forEach((order: WorkOrder) =>
+                realm.create("WorkOrder", { ...order, pendingSync: false }, Realm.UpdateMode.Modified)
             )
-        })
 
-        updated.forEach((order: any) => {
-            realm.create(
-                "WorkOrder",
-                { ...order, pendingSync: false },
-                Realm.UpdateMode.Modified
+            updated.forEach((order: WorkOrder) =>
+                realm.create("WorkOrder", { ...order, pendingSync: false }, Realm.UpdateMode.Modified)
             )
+            
+            deleted.forEach((id: any) => {
+                const order = realm.objectForPrimaryKey("WorkOrder", id)
+                if (order) order.deleted = true
+            })
         })
 
-        deleted.forEach((id: string | number) => {
-            const order = realm.objectForPrimaryKey("WorkOrder", id)
+        setLastSync(new Date().toISOString())
 
-            if (order) {
-                order.deleted = true
-            }
-        })
-
-    })
+    } catch (error) {
+      
+        console.log("Sincronização falhou (provavelmente offline):", error.message)
+    } finally {
+        setSyncing(false)
+    }
 }

@@ -26,6 +26,7 @@ export class WorkOrderSchema extends Realm.Object {
       completed: "bool",
       deleted: "bool",
       pendingSync: { type: "bool", default: false },
+      pendingAction: "string?"
     },
   }
 }
