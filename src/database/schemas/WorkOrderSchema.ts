@@ -1,6 +1,7 @@
 import Realm from "realm"
 
 export class WorkOrderSchema extends Realm.Object {
+
   id!: string
   title!: string
   description!: string
@@ -11,6 +12,7 @@ export class WorkOrderSchema extends Realm.Object {
   completed!: boolean
   deleted!: boolean
   pendingSync!: boolean
+  pendingAction!: string | null
 
   static schema: Realm.ObjectSchema = {
     name: "WorkOrder",
@@ -27,6 +29,6 @@ export class WorkOrderSchema extends Realm.Object {
       deleted: "bool",
       pendingSync: { type: "bool", default: false },
       pendingAction: "string?"
-    },
+    }
   }
 }

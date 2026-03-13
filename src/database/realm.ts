@@ -3,9 +3,9 @@ import { WorkOrderSchema } from "./schemas/WorkOrderSchema"
 
 export const realm = new Realm({
   schema: [WorkOrderSchema],
-  schemaVersion: 2, 
+  schemaVersion: 5, 
   onMigration: (oldRealm, newRealm) => {
-    if (oldRealm.schemaVersion < 2) {
+    if (oldRealm.schemaVersion < 5) {
      
    
     }

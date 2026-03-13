@@ -4,6 +4,7 @@ import { useNavigation } from "@react-navigation/native"
 import { getWorkOrders } from "../services/workOrderService"
 import { useSyncStore } from "../store/syncStore" 
 import { WorkOrder } from "../types/WorkOrder"
+import DeleteAllOrdersButton from "../components/DeleteAllOrdersButton"
 
 export default function WorkOrdersScreen() {
   const navigation = useNavigation()
@@ -28,6 +29,7 @@ export default function WorkOrdersScreen() {
 
   return (
     <View style={styles.container}>
+              <DeleteAllOrdersButton />
       {isSyncing && (
         <View style={styles.syncBanner}>
           <ActivityIndicator color="#fff" size="small" />
@@ -41,7 +43,7 @@ export default function WorkOrdersScreen() {
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.card}
-            onPress={() => navigation.navigate("WorkOrderForm", { orderId: item.id })}
+            onPress={() => navigation.navigate("WorkOrderEditScreen", { orderId: item.id })}
           >
             <Text style={styles.title}>{item.title}</Text>
             <Text style={styles.description}>{item.description}</Text>

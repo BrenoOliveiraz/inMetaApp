@@ -12,6 +12,7 @@ import { ActivityIndicator } from "react-native"
 
 import { createWorkOrder } from "../services/workOrderService"
 import { useNavigation } from "@react-navigation/native"
+import { syncWorkOrders } from "../services/syncService"
 
 export default function WorkOrderFormScreen() {
 
@@ -30,6 +31,7 @@ export default function WorkOrderFormScreen() {
 
     try {
 
+
       setLoading(true)
 
       await createWorkOrder({
@@ -40,6 +42,8 @@ export default function WorkOrderFormScreen() {
 
       Alert.alert("Chamado", "Chamado cadastrado com sucesso")
 
+            syncWorkOrders()
+  
       handleBack()
 
     } catch (error) {

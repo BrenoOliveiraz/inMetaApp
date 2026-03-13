@@ -6,6 +6,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import WorkOrdersScreen from './screens/WorkOrdersScreen';
 import WorkOrderFormScreen from './screens/WorkOrderFormScreen';
 import { useSync } from "./hooks/useSync"
+import WorkOrderEditScreen from './screens/WorkOrderEditScreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -33,6 +34,11 @@ function App() {
           <Stack.Screen
             name="WorkOrderForm"
             component={WorkOrderFormScreen}
+            options={{ title: 'Ordens de Serviço' }}
+          />
+                    <Stack.Screen
+            name="WorkOrderEditScreen"
+            component={WorkOrderEditScreen}
             options={{ title: 'Ordens de Serviço' }}
           />
 
