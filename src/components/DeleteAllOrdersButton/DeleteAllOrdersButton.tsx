@@ -1,6 +1,7 @@
 import React from "react"
 import { TouchableOpacity, Text, StyleSheet, Alert } from "react-native"
-import { deleteAllWorkOrders } from "../services/workOrderService"
+import { deleteAllWorkOrders } from "../../services/workOrderService"
+
 
 export default function DeleteAllOrdersButton() {
 

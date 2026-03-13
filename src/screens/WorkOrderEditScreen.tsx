@@ -1,103 +1,163 @@
-import React, { useState, useEffect } from "react";
-import { View, TextInput, Button, StyleSheet, Alert } from "react-native";
-import { useRoute, useNavigation } from "@react-navigation/native";
-import { createWorkOrder, deleteWorkOrder, orderUpdate,  } from "../services/workOrderService";
-import { syncWorkOrders } from "../services/syncService";
+import React, { useState } from "react"
+import {
+  View,
+  Button,
+  StyleSheet,
+  Alert
+} from "react-native"
+
+import { useRoute, useNavigation } from "@react-navigation/native"
+
+import {
+  createWorkOrder,
+  deleteWorkOrder,
+  orderUpdate
+} from "../services/workOrderService"
+
+import { syncWorkOrders } from "../services/syncService"
+
+import FormInput from "../components/FormInput/FormInput"
 
 export default function WorkOrderEditScreen() {
 
-  const route = useRoute();
-  const navigation = useNavigation();
-  const params = route.params as { orderId?: string };
+  const route = useRoute()
+  const navigation = useNavigation()
 
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [assignedTo, setAssignedTo] = useState("");
+  const params = route.params as { orderId?: string }
 
-
+  const [title, setTitle] = useState("")
+  const [description, setDescription] = useState("")
+  const [assignedTo, setAssignedTo] = useState("")
 
   const handleSave = async () => {
+
+    if (!title || !description || !assignedTo) {
+      Alert.alert("Atenção", "Preencha todos os campos")
+      return
+    }
+
     try {
-      if (!title || !description || !assignedTo) {
-        Alert.alert("Atenção", "Preencha todos os campos");
-        return;
-      }
 
       if (params?.orderId) {
-  
-        orderUpdate(params.orderId, { title, description, assignedTo });
+
+        orderUpdate(params.orderId, {
+          title,
+          description,
+          assignedTo
+        })
+
       } else {
 
-        createWorkOrder({ title, description, assignedTo });
+        createWorkOrder({
+          title,
+          description,
+          assignedTo
+        })
+
       }
 
-      await syncWorkOrders();
+      await syncWorkOrders()
 
-      navigation.goBack();
+      navigation.goBack()
+
     } catch (error) {
-      console.log("Erro ao salvar:", error);
-      Alert.alert("Erro", "Não foi possível salvar");
+
+      console.log("Erro ao salvar:", error)
+
+      Alert.alert("Erro", "Não foi possível salvar")
+
     }
-  };
+
+  }
 
   const handleDelete = () => {
 
-    Alert.alert("Excluir", "Deseja realmente excluir esta ordem?", [
-      { text: "Cancelar", style: "cancel" },
-      {
-        text: "Excluir",
-        style: "destructive",
-        onPress: async () => {
+    Alert.alert(
+      "Excluir",
+      "Deseja realmente excluir esta ordem?",
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Excluir",
+          style: "destructive",
+          onPress: async () => {
 
-          deleteWorkOrder(params.orderId!);
+            deleteWorkOrder(params.orderId!)
 
-          await syncWorkOrders();
+            await syncWorkOrders()
 
-          navigation.goBack();
+            navigation.goBack()
+
+          }
         }
-      }
-    ]);
+      ]
+    )
 
-  };
+  }
 
   return (
+
     <View style={styles.container}>
 
-      <TextInput
-        placeholder="Título"
+      <FormInput
+        label="Título"
         value={title}
         onChangeText={setTitle}
-        style={styles.input}
       />
 
-      <TextInput
-        placeholder="Descrição"
+      <FormInput
+        label="Descrição"
         value={description}
         onChangeText={setDescription}
-        style={styles.input}
       />
 
-      <TextInput
-        placeholder="Técnico"
+      <FormInput
+        label="Técnico"
         value={assignedTo}
         onChangeText={setAssignedTo}
-        style={styles.input}
       />
 
-      <Button title="Salvar Ordem" onPress={handleSave} />
+      <View style={styles.buttons}>
 
-      {params?.orderId && (
-        <View style={{ marginTop: 10 }}>
-          <Button title="Excluir Ordem" color="red" onPress={handleDelete} />
-        </View>
-      )}
+        <Button
+          title="Salvar Ordem"
+          onPress={handleSave}
+        />
+
+        {params?.orderId && (
+
+          <View style={styles.deleteButton}>
+            <Button
+              title="Excluir Ordem"
+              color="red"
+              onPress={handleDelete}
+            />
+          </View>
+
+        )}
+
+      </View>
 
     </View>
-  );
+
+  )
 
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 20 },
-  input: { borderBottomWidth: 1, marginBottom: 15, padding: 8 }
-});
+
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: "#fff"
+  },
+
+  buttons: {
+    marginTop: 24
+  },
+
+  deleteButton: {
+    marginTop: 12
+  }
+
+})

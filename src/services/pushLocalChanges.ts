@@ -8,19 +8,19 @@ export async function pushLocalChanges() {
 
   for (const order of pendingOrders) {
     try {
+
       if (order.pendingAction === "create") {
         await api.post("/work-orders", {
           title: order.title,
           description: order.description,
           assignedTo: order.assignedTo,
         });
-        
         realm.write(() => {
           order.pendingSync = false;
           order.pendingAction = null;
         });
-      } 
-      
+      }
+
       else if (order.pendingAction === "update") {
         await api.put(`/work-orders/${order.id}`, {
           title: order.title,
@@ -29,17 +29,14 @@ export async function pushLocalChanges() {
           status: order.status,
           completed: order.completed,
         });
-
         realm.write(() => {
           order.pendingSync = false;
           order.pendingAction = null;
         });
-      } 
-      else if (order.pendingAction === "delete") {
+      }
 
+      else if (order.pendingAction === "delete") {
         await api.delete(`/work-orders/${order.id}`);
-        
-  
         realm.write(() => {
           const orderToDelete = realm.objectForPrimaryKey("WorkOrder", order.id);
           if (orderToDelete) {
@@ -49,7 +46,6 @@ export async function pushLocalChanges() {
       }
     } catch (error: any) {
       console.log(`Erro ao processar ${order.pendingAction} para o ID ${order.id}:`, error.message);
-
     }
   }
 }

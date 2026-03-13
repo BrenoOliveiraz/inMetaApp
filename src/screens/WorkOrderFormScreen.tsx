@@ -1,27 +1,26 @@
 import React, { useState } from "react"
 import {
   View,
-  TextInput,
   Button,
   StyleSheet,
-  Text,
-  Alert
+  Alert,
+  ActivityIndicator
 } from "react-native"
 
-import { ActivityIndicator } from "react-native"
-
-import { createWorkOrder } from "../services/workOrderService"
 import { useNavigation } from "@react-navigation/native"
+import { createWorkOrder } from "../services/workOrderService"
 import { syncWorkOrders } from "../services/syncService"
 
+import FormInput from "../components/FormInput/FormInput"
+
 export default function WorkOrderFormScreen() {
+
+  const navigation = useNavigation()
 
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const [assignedTo, setAssignedTo] = useState("")
   const [loading, setLoading] = useState(false)
-
-  const navigation = useNavigation()
 
   function handleBack() {
     navigation.goBack()
@@ -29,8 +28,12 @@ export default function WorkOrderFormScreen() {
 
   async function handleSave() {
 
-    try {
+    if (!title || !description || !assignedTo) {
+      Alert.alert("Atenção", "Preencha todos os campos")
+      return
+    }
 
+    try {
 
       setLoading(true)
 
@@ -42,8 +45,8 @@ export default function WorkOrderFormScreen() {
 
       Alert.alert("Chamado", "Chamado cadastrado com sucesso")
 
-            syncWorkOrders()
-  
+      await syncWorkOrders()
+
       handleBack()
 
     } catch (error) {
@@ -62,32 +65,34 @@ export default function WorkOrderFormScreen() {
   return (
     <View style={styles.container}>
 
-      <Text style={styles.label}>Título</Text>
-      <TextInput
-        style={styles.input}
+      <FormInput
+        label="Título"
         value={title}
         onChangeText={setTitle}
       />
 
-      <Text style={styles.label}>Descrição</Text>
-      <TextInput
-        style={styles.input}
+      <FormInput
+        label="Descrição"
         value={description}
         onChangeText={setDescription}
       />
 
-      <Text style={styles.label}>Técnico</Text>
-      <TextInput
-        style={styles.input}
+      <FormInput
+        label="Técnico"
         value={assignedTo}
         onChangeText={setAssignedTo}
       />
 
-      {loading ? (
-        <ActivityIndicator />
-      ) : (
-        <Button title="Salvar Ticket" onPress={handleSave} />
-      )}
+      <View style={styles.buttonContainer}>
+        {loading ? (
+          <ActivityIndicator />
+        ) : (
+          <Button
+            title="Salvar Ticket"
+            onPress={handleSave}
+          />
+        )}
+      </View>
 
     </View>
   )
@@ -101,17 +106,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff"
   },
 
-  label: {
-    marginTop: 16,
-    fontWeight: "bold"
-  },
-
-  input: {
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 6,
-    padding: 10,
-    marginTop: 6
+  buttonContainer: {
+    marginTop: 24
   }
 
 })
