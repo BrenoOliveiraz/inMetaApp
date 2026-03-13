@@ -6,17 +6,15 @@ import {
   Alert,
   ActivityIndicator
 } from "react-native"
-
 import { useNavigation } from "@react-navigation/native"
 import { createWorkOrder } from "../services/workOrderService"
 import { syncWorkOrders } from "../services/syncService"
-
 import FormInput from "../components/FormInput/FormInput"
+import PrimaryButton from "../components/PrimaryButton/PrimaryButton"
 
 export default function WorkOrderFormScreen() {
 
   const navigation = useNavigation()
-
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const [assignedTo, setAssignedTo] = useState("")
@@ -87,9 +85,10 @@ export default function WorkOrderFormScreen() {
         {loading ? (
           <ActivityIndicator />
         ) : (
-          <Button
+          <PrimaryButton
             title="Salvar Ticket"
             onPress={handleSave}
+            loading={loading}
           />
         )}
       </View>

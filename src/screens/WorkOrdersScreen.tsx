@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator } from "react-native"
+import { View, FlatList, StyleSheet } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { getWorkOrders } from "../services/workOrderService"
 import { useSyncStore } from "../store/syncStore"
@@ -15,21 +15,28 @@ export default function WorkOrdersScreen() {
   const isSyncing = useSyncStore((state) => state.syncing)
   const [orders, setOrders] = useState<WorkOrder[]>([])
 
-  useEffect(() => {
-    const results = getWorkOrders()
-    setOrders([...results])
+useEffect(() => {
 
-    const listener = () => {
-      setOrders([...results])
-    }
+  const results = getWorkOrders()
 
-    results.addListener(listener)
+  const mapOrders = () => {
+    const data = results.map(order => ({ ...order }))
+    setOrders(data)
+  }
 
-    return () => {
-      results.removeListener(listener)
+  mapOrders()
 
-    }
-  }, [])
+  const listener = () => {
+    mapOrders()
+  }
+
+  results.addListener(listener)
+
+  return () => {
+    results.removeListener(listener)
+  }
+
+}, [])
 
   return (
     <View style={styles.container}>

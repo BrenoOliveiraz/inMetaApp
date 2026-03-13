@@ -22,8 +22,20 @@ function App() {
         <Stack.Navigator
           initialRouteName="WorkOrders"
           screenOptions={{
-            headerStyle: { backgroundColor: '#1976D2' },
-            headerTintColor: '#fff',
+            headerStyle: {
+              backgroundColor: "#1976D2"
+            },
+
+            headerTintColor: "#fff",
+
+            headerTitleStyle: {
+              fontSize: 20,
+              fontWeight: "700"
+            },
+
+            headerShadowVisible: false,
+
+            headerTitleAlign: "center"
           }}
         >
           <Stack.Screen
@@ -34,12 +46,12 @@ function App() {
           <Stack.Screen
             name="WorkOrderForm"
             component={WorkOrderFormScreen}
-            options={{ title: 'Ordens de Serviço' }}
+            options={{ title: 'Abrir Ticket' }}
           />
-                    <Stack.Screen
+          <Stack.Screen
             name="WorkOrderEditScreen"
             component={WorkOrderEditScreen}
-            options={{ title: 'Ordens de Serviço' }}
+            options={{ title: 'Editar Ticket' }}
           />
 
         </Stack.Navigator>

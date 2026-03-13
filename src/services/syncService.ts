@@ -1,5 +1,5 @@
 import Realm from "realm"
-import { api } from "./api"
+import { api } from "../api/api"
 import { realm } from "../database/realm"
 import { pushLocalChanges } from "./pushLocalChanges"
 import { useSyncStore } from "../store/syncStore"

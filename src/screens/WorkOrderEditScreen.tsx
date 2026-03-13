@@ -1,34 +1,45 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import {
   View,
   Button,
   StyleSheet,
   Alert
 } from "react-native"
-
 import { useRoute, useNavigation } from "@react-navigation/native"
-
 import {
   createWorkOrder,
   deleteWorkOrder,
+  getWorkOrderById,
   orderUpdate
 } from "../services/workOrderService"
-
 import { syncWorkOrders } from "../services/syncService"
-
 import FormInput from "../components/FormInput/FormInput"
 
 export default function WorkOrderEditScreen() {
 
   const route = useRoute()
   const navigation = useNavigation()
-
   const params = route.params as { orderId?: string }
-
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const [assignedTo, setAssignedTo] = useState("")
 
+
+  useEffect(() => {
+
+    if (!params?.orderId) return
+
+    const order = getWorkOrderById(params.orderId)
+
+    if (order) {
+      setTitle(order.title)
+      setDescription(order.description)
+      setAssignedTo(order.assignedTo)
+    }
+
+  }, [params?.orderId])
+
+  
   const handleSave = async () => {
 
     if (!title || !description || !assignedTo) {

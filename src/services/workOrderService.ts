@@ -10,13 +10,13 @@ export function createWorkOrder(data: { title: string, description: string, assi
       title: data.title,
       description: data.description,
       assignedTo: data.assignedTo,
-      status: "Pending",       
-      completed: false,         
+      status: "Pending",
+      completed: false,
       deleted: false,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      pendingSync: true,       
-      pendingAction: "create"   
+      pendingSync: true,
+      pendingAction: "create"
     });
   });
 }
@@ -27,9 +27,17 @@ export function getWorkOrders() {
   return realm
     .objects<WorkOrder>("WorkOrder")
     .filtered("deleted == false")
-    .sorted("createdAt")
+    .sorted("createdAt", true)
 
 }
+
+export function getWorkOrderById(id: string) {
+
+  return realm.objectForPrimaryKey<WorkOrder>("WorkOrder", id)
+
+}
+
+
 
 // UPDATE
 export function orderUpdate(id: string, updates: Partial<WorkOrder>) {
@@ -57,15 +65,15 @@ export function orderUpdate(id: string, updates: Partial<WorkOrder>) {
 
 }
 
-
+//DELET
 export function deleteWorkOrder(id: string) {
   const order = realm.objectForPrimaryKey<WorkOrder>("WorkOrder", id);
 
   if (order) {
     realm.write(() => {
-      order.deleted = true;      
-      order.pendingSync = true;  
-      order.pendingAction = "delete"; 
+      order.deleted = true;
+      order.pendingSync = true;
+      order.pendingAction = "delete";
       order.updatedAt = new Date().toISOString();
     });
   }
@@ -74,7 +82,7 @@ export function deleteWorkOrder(id: string) {
 
 export function deleteAllWorkOrders() {
   const orders = realm.objects<WorkOrder>("WorkOrder");
-  
+
   realm.write(() => {
     orders.forEach((order) => {
       order.deleted = true;
